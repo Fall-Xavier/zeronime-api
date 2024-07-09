@@ -87,10 +87,26 @@ def genre(genre):
     except Exception as e:
         return Result(f"error {e}", {"data": None}, 400)
         
-@bp.route("/genres")
+@bp.route("/genres/")
 def genres():
     try:
         data = ListAll("https://animekompi.vip/anime/?type=movie&sub=&order=popular", 0)
+        return Result("success", data, 200)
+    except Exception as e:
+        return Result(f"error {e}", {"data": None}, 400)
+        
+@bp.route("/seasons/")
+def seasons():
+    try:
+        data = ListAll("https://animekompi.vip/anime/?type=movie&sub=&order=popular", 1)
+        return Result("success", data, 200)
+    except Exception as e:
+        return Result(f"error {e}", {"data": None}, 400)
+        
+@bp.route("/studios/")
+def studios():
+    try:
+        data = ListAll("https://animekompi.vip/anime/?type=movie&sub=&order=popular", 2)
         return Result("success", data, 200)
     except Exception as e:
         return Result(f"error {e}", {"data": None}, 400)
@@ -105,7 +121,7 @@ def search():
     except Exception as e:
         return Result(f"error {e}", {"data": None}, 400)
         
-@bp.route("/anime/<slug>")
+@bp.route("/anime/<slug>/")
 def detail(slug):
     try:
         data = Detail(f"https://animekompi.vip/anime/{slug}")
@@ -113,7 +129,7 @@ def detail(slug):
     except Exception as e:
         return Result(f"error {e}", {"data": None}, 400)
         
-@bp.route("/episode/<slug>")
+@bp.route("/episode/<slug>/")
 def episode(slug):
     try:
         data = Episode(f"https://animekompi.vip/{slug}")
