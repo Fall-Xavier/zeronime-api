@@ -80,7 +80,7 @@ def ListAll(url,number):
     data = []
     response = session.get(url)
     parsing = parser(response.text, "html.parser")
-    soup = parsing.find("div",{"class":"filter dropdown"})[number]
+    soup = parsing.find_all("div",{"class":"filter dropdown"})[number]
     for item in soup.find("ul",{"class":"dropdown-menu c4 scrollz"}).find_all("li"):
         title = item.text.strip()
         slug = item.find("input").get("value")
