@@ -1,10 +1,17 @@
 import cloudscraper,base64
 from bs4 import BeautifulSoup as parser
 session = cloudscraper.create_scraper()
+headers = {
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,Image/avif.image/webqp.image/apng,*/*;q=0.8,application/signed-exchange,v=b3,q=0.7",
+    "Accept-Language": "id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7",
+    "Accept-Encoding": "gzip, deflate",
+    "Connection": "keep-alive",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+}
 
 def Latest(url):
     data = {}
-    response = session.get(url)
+    response = session.get(url, headers=headers)
     parsing = parser(response.text, "html.parser")
     soup = parsing.find("div",{"class":"listupd normal"})
     anime = []
@@ -26,7 +33,7 @@ def Latest(url):
      
 def Schedule(url):
     data = []
-    response = session.get(url)
+    response = session.get(url, headers=headers)
     parsing = parser(response.text, "html.parser")
     soup = parsing.find("div",{"class":"postbody"})
     for item in soup.find_all("div",{"class":"bixbox"}):
@@ -49,7 +56,7 @@ def Schedule(url):
         
 def Series(url):
     data = {}
-    response = session.get(url)
+    response = session.get(url, headers=headers)
     parsing = parser(response.text, "html.parser")
     soup = parsing.find("div",{"class":"postbody"})
     anime = []
@@ -78,7 +85,7 @@ def Series(url):
     
 def ListAll(url,number):
     data = []
-    response = session.get(url)
+    response = session.get(url, headers=headers)
     parsing = parser(response.text, "html.parser")
     soup = parsing.find_all("div",{"class":"filter dropdown"})[number]
     for item in soup.find("ul",{"class":"dropdown-menu c4 scrollz"}).find_all("li"):
@@ -89,7 +96,7 @@ def ListAll(url,number):
     
 def Detail(url):
     data = {}
-    response = session.get(url)
+    response = session.get(url, headers=headers)
     parsing = parser(response.text, "html.parser")
     soup = parsing.find("div",{"class":"postbody"})
     title = soup.find("h1",{"class":"entry-title"}).text
@@ -123,7 +130,7 @@ def Detail(url):
     
 def Episode(url):
     data = {}
-    response = session.get(url)
+    response = session.get(url, headers=headers)
     parsing = parser(response.text, "html.parser")
     soup = parsing.find("div",{"class":"postbody"})
     title = soup.find("h1",{"class":"entry-title"}).text
@@ -144,3 +151,18 @@ def Episode(url):
             data.update({f"server{index}":link})
     return data
     
+def TopAnime(url,date):
+    data = {}
+    response = session.get(url, headers=headers)
+    parsing = parser(response.text, "html.parser")
+    soup = parsing.find("div",{"id":"wpop-items"})
+    anime = [] #monthly, alltime
+    for item in soup.find("div",{"class":f"serieslist pop wpop wpop-{date}"}).find_all("li"):
+        title = item.find("h4").text.replace("\n","")
+        slug = item.find("a",{"class":"series"}).get("href").split("/")[3]
+        cover = item.find_all("img")[1].get("src")
+        rating = item.find("div",{"class":"numscore"}).text
+        genre = ",".join(genre.text for genre in item.find("span").find_all("a"))
+        anime.append({"title": title, "slug": slug, "cover": cover, "rating": rating, "genre": genre})
+    data.update({"anime":anime})
+    return data
