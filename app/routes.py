@@ -7,6 +7,9 @@ bp = Blueprint("api", __name__)
 @bp.after_request
 def add_header(response):
     response.headers["Content-Type"] = "application/json"
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type,Authorization"
+    response.headers["Access-Control-Allow-Methods"] = "GET,PUT,POST,DELETE,OPTIONS"
     return response
     
 @bp.route("/latest/")
