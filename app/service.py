@@ -43,11 +43,11 @@ def Schedule(url):
                 continue
             animeList = {"day": day, "anime": []}
             for anime in item.find_all("div",{"class":"bs"}):
-                title = item.find("a").get("title")
-                slug = item.find("a").get("href").split("/")[4]
-                cover = item.find_all("img")[1].get("src")
-                episode = item.find("span",{"class":"sb Sub"}).text
-                date = item.find("span",{"class":"epx cndwn"}).text
+                title = anime.find("a").get("title")
+                slug = anime.find("a").get("href").split("/")[4]
+                cover = anime.find_all("img")[1].get("src")
+                episode = anime.find("span",{"class":"sb Sub"}).text
+                date = anime.find("span",{"class":"epx cndwn"}).text
                 animeList["anime"].append({"title":title, "slug":slug, "cover":cover, "episode":episode, "date":date})
             data.append(animeList)
         except:
