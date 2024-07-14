@@ -37,21 +37,20 @@ def Schedule(url):
     parsing = parser(response.text, "html.parser")
     soup = parsing.find("div",{"class":"postbody"})
     for item in soup.find_all("div",{"class":"bixbox"}):
-        try:
-            day = item.find("div",{"class":"releases"}).text
-            if "Jadwal Rilis" in day:
-                continue
-            animeList = {"day": day, "anime": []}
-            for anime in item.find_all("div",{"class":"bs"}):
+        day = item.find("div",{"class":"releases"}).text
+        if "Jadwal Rilis" in day:
+            continue
+        animeList = {"day": day, "anime": []}
+        for anime in item.find_all("div",{"class":"bs"}):
+            try:
                 title = anime.find("a").get("title")
                 slug = anime.find("a").get("href").split("/")[4]
                 cover = anime.find_all("img")[1].get("src")
                 episode = anime.find("span",{"class":"sb Sub"}).text
                 date = anime.find("span",{"class":"epx cndwn"}).text
                 animeList["anime"].append({"title":title, "slug":slug, "cover":cover, "episode":episode, "date":date})
-            data.append(animeList)
-        except:
-            pass
+            except:pass
+        data.append(animeList)
     return data
         
 def Series(url):
@@ -152,17 +151,16 @@ def Episode(url):
     return data
     
 def TopAnime(url,date):
-    data = {}
+    data = []
     response = session.get(url, headers=headers)
     parsing = parser(response.text, "html.parser")
     soup = parsing.find("div",{"id":"wpop-items"})
-    anime = [] #monthly, alltime
+    #monthly, alltime
     for item in soup.find("div",{"class":f"serieslist pop wpop wpop-{date}"}).find_all("li"):
         title = item.find("h4").text.replace("\n","")
         slug = item.find("a",{"class":"series"}).get("href").split("/")[3]
         cover = item.find_all("img")[1].get("src")
         rating = item.find("div",{"class":"numscore"}).text
         genre = ",".join(genre.text for genre in item.find("span").find_all("a"))
-        anime.append({"title": title, "slug": slug, "cover": cover, "rating": rating, "genre": genre})
-    data.update({"anime":anime})
+        data.append({"title": title, "slug": slug, "cover": cover, "rating": rating, "genre": genre})
     return data
