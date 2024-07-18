@@ -1,5 +1,5 @@
 from flask import Blueprint,request
-from .service import Latest,Schedule,Series,ListAll,Detail,Episode,TopAnime
+from .service import Latest,Schedule,Series,ListAll,Detail,Episode,TopAnime,Recommendation,NewSeries
 from .result import Result
 
 bp = Blueprint("api", __name__)
@@ -144,6 +144,22 @@ def episode(slug):
 def topanime(date):
     try:
         data = TopAnime("https://animekompi.vip/", date)
+        return Result("success", data, 200)
+    except Exception as e:
+        return Result(f"error {e}", {"data": None}, 400)
+
+@bp.route("/recommendation")
+def recommendation():
+    try:
+        data = Recommendation("https://animekompi.vip/")
+        return Result("success", data, 200)
+    except Exception as e:
+        return Result(f"error {e}", {"data": None}, 400)
+        
+@bp.route("/newseries")
+def newseries():
+    try:
+        data = NewSeries("https://animekompi.vip/")
         return Result("success", data, 200)
     except Exception as e:
         return Result(f"error {e}", {"data": None}, 400)
