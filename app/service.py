@@ -164,3 +164,37 @@ def TopAnime(url,date):
         genre = ",".join(genre.text for genre in item.find("span").find_all("a"))
         data.append({"title": title, "slug": slug, "cover": cover, "rating": rating, "genre": genre})
     return data
+    
+def Recommendation(url):
+    data = []
+    response = session.get(url, headers=headers)
+    parsing = parser(response.text, "html.parser")
+    soup = parsing.find("div",{"class":"slidtop"})
+    for item in soup.find_all("div",{"class":"slide-item full"}):
+        title = item.find("span",{"class":"ellipsis"}).text
+        slug = item.find("span",{"class":"ellipsis"}).find("a").get("href").split("/")[4]
+        cover = item.find_all("img")[1].get("src")
+        date = item.find("span",{"class":"release-year"}).text
+        genre = ",".join(genre.text for genre in item.find("div",{"class":"extra-category"}).find_all("a"))
+        sinopsis = item.find("p",{"class":"story"}).text
+        status = item.find("span",{"class":"director"}).text.split(": ")[1]
+        type = item.find("span",{"class":"actor"}).text.split(": ")[1]
+        data.append({"title": title, "slug": slug, "cover": cover, "date": date, "genre": genre, "sinopsis": sinopsis, "status": status, "type": type})
+    return data
+    
+def NewSeries(url):
+    data = []
+    response = session.get(url, headers=headers)
+    parsing = parser(response.text, "html.parser")
+    for par in parsing.find_all("div",{"class":"section"}):
+        try:
+            if "New Series" in str(par.find("div",{"class":"releases"}).find("h3").text):
+                for item in par.find_all("li"):
+                    title = item.find("h4").text
+                    slug = item.find("h4").find("a").get("href").split("/")[4]
+                    cover = item.find_all("img")[1].get("src")
+                    genre = ",".join(genre.text for genre in item.find_all("span")[0].find_all("a"))
+                    studio = item.find_all("span")[1].text.strip()
+                    data.append({"title": title, "slug": slug, "cover": cover, "genre": genre, "studio": studio})
+        except:pass
+    return data
