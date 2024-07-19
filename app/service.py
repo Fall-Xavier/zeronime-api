@@ -113,7 +113,7 @@ def Detail(url):
         name = item.text.split(": ")[0].replace(" ","").lower()
         value = item.text.split(": ")[1]
         data.update({name:value})
-    genre = ",".join(genre.text for genre in soup.find("div",{"class":"genxed"}).find_all("a"))
+    genre = ", ".join(genre.text for genre in soup.find("div",{"class":"genxed"}).find_all("a"))
     data.update({"genre":genre})
     episode = []
     for item in soup.find("div",{"class":"eplister"}).find("ul").find_all("li"):
