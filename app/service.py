@@ -17,7 +17,7 @@ def Latest(url):
     anime = []
     for item in soup.find_all("article"):
         title = item.find("a").get("title").split(" Episode")[0]
-        slug = item.find("a").get("href").split("/")[3]
+        slug = item.find("a").get("href").split("/")[3].split("-episode")[0]
         cover = item.find_all("img")[1].get("src")
         episode = item.find("span",{"class":"epx"}).text.replace("Ep ","")
         type = item.find("div",{"class":"typez"}).text
