@@ -122,7 +122,7 @@ def Detail(url):
         eps = item.find("div",{"class":"epl-num"}).text
         date = item.find("div",{"class":"epl-date"}).text
         episode.append({"title":title, "slug":slug, "eps":eps, "date":date})
-    data.update({"dataEpisode": episode})
+    data.update({"dataEpisode": episode, "totalEpisode": len(episode)
     sinopsis = soup.find("div",{"class":"entry-content"}).text.replace("\n","")
     data.update({"sinopsis": sinopsis})
     return data
