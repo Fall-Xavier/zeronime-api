@@ -136,6 +136,7 @@ def Episode(url):
     cover = soup.find_all("img")[1].get("src")
     date = soup.find("span",{"class":"updated"}).text
     data.update({"title":title, "cover":cover, "date":date})
+    server = []
     for item in soup.find("div",{"class":"mobius"}).find("select").find_all("option"):
         if "data-index" in str(item):
             index = int(item.get("data-index"))
@@ -147,7 +148,8 @@ def Episode(url):
                 link = html_format.find("IFRAME").get("SRC")
             if "https" not in link:
                 link = f"https:{link}"
-            data.update({f"server{index}":link})
+            server.append({f"server": str(index), "link": link})
+    data.update({"dataServer":server})
     return data
     
 def TopAnime(url,date):
